@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Biblioteca de Videos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .upload-btn:active {
+            transform: translateY(0);
+        }
+
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            background: rgba(102, 126, 234, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: #764ba2;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .video-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            position: relative;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .video-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-subtext {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal-video {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-bar {
+                order: 2;
+            }
+
+            .upload-btn {
+                order: 1;
+            }
+
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 20px;
+            }
+
+            .upload-area {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">📹 MiVideo</div>
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar videos..." id="searchInput">
+                </div>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    ➕ Subir Video
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">🎬</div>
+                    <div class="upload-text">Arrastra y suelta tus videos aquí</div>
+                    <div class="upload-subtext">o haz clic para seleccionar archivos</div>
+                    <input type="file" class="file-input" id="fileInput" accept="video/*" multiple>
+                </div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div id="videoContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🎭</div>
+                    <div class="empty-state-text">Tu biblioteca está vacía</div>
+                    <div class="empty-state-subtext">Comienza subiendo tu primer video</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="videoModal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <div class="modal-content">
+            <video class="modal-video" id="modalVideo" controls></video>
+        </div>
+    </div>
+
+    <script>
+        let videos = [];
+        let filteredVideos = [];
+
+        // Elementos del DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const videoContainer = document.getElementById('videoContainer');
+        const searchInput = document.getElementById('searchInput');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+
+        // Event listeners
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        uploadArea.addEventListener('dragenter', handleDragEnter);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        fileInput.addEventListener('change', handleFileSelect);
+        searchInput.addEventListener('input', handleSearch);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            if (!uploadArea.contains(e.relatedTarget)) {
+                uploadArea.classList.remove('dragover');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            processFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            processFiles(files);
+        }
+
+        function processFiles(files) {
+            const videoFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+
+            if (videoFiles.length === 0) {
+                alert('Por favor selecciona archivos de video válidos');
+                return;
+            }
+
+            showProgress();
+
+            videoFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    processVideo(file, index, videoFiles.length);
+                }, index * 500);
+            });
+        }
+
+        function processVideo(file, index, total) {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+
+            video.onloadedmetadata = () => {
+                const videoData = {
+                    id: Date.now() + index,
+                    name: file.name,
+                    size: formatFileSize(file.size),
+                    duration: formatDuration(video.duration),
+                    uploadDate: new Date().toLocaleDateString(),
+                    url: URL.createObjectURL(file),
+                    thumbnail: null
+                };
+
+                // Crear thumbnail
+                createThumbnail(video, videoData);
+
+                videos.push(videoData);
+
+                // Actualizar progreso
+                const progress = ((index + 1) / total) * 100;
+                progressFill.style.width = progress + '%';
+
+                if (index === total - 1) {
+                    setTimeout(() => {
+                        hideProgress();
+                        renderVideos();
+                    }, 500);
+                }
+            };
+
+            video.src = URL.createObjectURL(file);
+        }
+
+        function createThumbnail(video, videoData) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            video.currentTime = 1; // Capturar frame en el segundo 1
+
+            video.onseeked = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+                videoData.thumbnail = canvas.toDataURL();
+            };
+        }
+
+        function renderVideos() {
+            const videosToRender = filteredVideos.length > 0 ? filteredVideos : videos;
+
+            if (videosToRender.length === 0) {
+                videoContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎭</div>
+                        <div class="empty-state-text">Tu biblioteca está vacía</div>
+                        <div class="empty-state-subtext">Comienza subiendo tu primer video</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'video-grid';
+
+            videosToRender.forEach(video => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => playVideo(video);
+
+                card.innerHTML = `
+                    <div style="position: relative;">
+                        ${video.thumbnail ?
+                        `<img src="${video.thumbnail}" alt="${video.name}" class="video-thumbnail">` :
+                        `<div class="video-thumbnail"></div>`
+                    }
+                        <div class="video-duration">${video.duration}</div>
+                        <div class="play-overlay">▶️</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="video-title">${video.name}</div>
+                        <div class="video-details">Subido el ${video.uploadDate}</div>
+                        <div class="video-details">Tamaño: ${video.size}</div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            videoContainer.innerHTML = '';
+            videoContainer.appendChild(grid);
+        }
+
+        function playVideo(video) {
+            modalVideo.src = video.url;
+            modal.style.display = 'block';
+            modalVideo.play();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            modalVideo.pause();
+            modalVideo.src = '';
+        }
+
+        function handleSearch() {
+            const query = searchInput.value.toLowerCase();
+
+            if (query === '') {
+                filteredVideos = [];
+            } else {
+                filteredVideos = videos.filter(video =>
+                    video.name.toLowerCase().includes(query)
+                );
+            }
+
+            renderVideos();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDuration(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function showProgress() {
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+        }
+
+        function hideProgress() {
+            progressBar.style.display = 'none';
+        }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

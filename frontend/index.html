@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenTube</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS Variables for better maintainability */
+        :root {
+            --bg-color: #0f0f0f;
+            --header-bg-color: #0f0f0f;
+            --sidebar-bg-color: #0f0f0f;
+            --text-color: #ffffff;
+            --secondary-text-color: #aaaaaa;
+            --accent-color: #ff0000;
+            --hover-color: #272727;
+            --border-color: #272727;
+            --input-bg-color: #121212;
+            --input-border-color: #303030;
+            --focus-border-color: #1c62b9;
+            --button-bg-color: #303030;
+            --button-hover-bg-color: #404040;
+            --api-key-container-bg: #1a1a1a;
+            --api-key-input-bg: #0f0f0f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background-color: var(--header-bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .menu-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none; /* Ensure logo is also clickable as a link if needed */
+        }
+
+        .logo i {
+            color: var(--accent-color);
+            font-size: 24px;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+        }
+
+        .search-container {
+            display: flex;
+            flex: 1;
+            max-width: 500px;
+            position: relative; /* Added for clear button positioning */
+        }
+
+        .search-input {
+            flex: 1;
+            height: 40px;
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--input-border-color);
+            border-radius: 20px 0 0 20px;
+            padding: 0 16px;
+            color: var(--text-color);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--secondary-text-color);
+        }
+
+        .search-input:focus {
+            border-color: var(--focus-border-color);
+            background-color: var(--bg-color);
+        }
+
+        .search-clear-btn { /* Added clear button for search */
+            position: absolute;
+            right: 64px; /* Position next to search button */
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--secondary-text-color);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 8px;
+            display: none; /* Hidden by default */
+        }
+
+        .search-clear-btn:hover {
+            color: var(--text-color);
+        }
+
+        .search-btn {
+            width: 64px;
+            height: 40px;
+            background-color: var(--button-bg-color);
+            border: 1px solid var(--input-border-color);
+            border-radius: 0 20px 20px 0;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .search-btn:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .voice-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #181818;
+            border: none;
+            border-radius: 50%;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .voice-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 18px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none; /* Make buttons behave like links */
+        }
+
+        .header-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--focus-border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none; /* Make avatar behave like a link */
+        }
+
+        .user-avatar:hover {
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            margin-top: 56px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: var(--sidebar-bg-color);
+            height: calc(100vh - 56px);
+            position: fixed;
+            left: 0;
+            top: 56px;
+            padding: 12px 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--hover-color) transparent; /* Firefox */
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--hover-color);
+            border-radius: 10px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar.show { /* For mobile/responsive sidebar */
+            transform: translateX(0);
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-title {
+            color: var(--secondary-text-color);
+            font-size: 16px;
+            font-weight: 600;
+            padding: 8px 24px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 10px 24px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 0 20px 20px 0; /* Slight rounded corner for visual appeal */
+            margin-right: 8px;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--hover-color);
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 8px 0;
+        }
+
+        /* API Key Input */
+        .api-key-container {
+            background-color: var(--api-key-container-bg);
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: var(--api-key-input-bg);
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            color: var(--text-color);
+            font-size: 14px;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .api-key-input::placeholder {
+            color: var(--secondary-text-color);
+        }
+
+        .api-key-input:focus {
+            border-color: var(--focus-border-color);
+        }
+
+        .api-key-btn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .api-key-btn:hover {
+            background-color: #cc0000; /* Darker red */
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 24px;
+            background-color: var(--bg-color);
+            min-height: calc(100vh - 56px);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Category Chips */
+        .category-chips {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch; /* for smoother scrolling on iOS */
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+        }
+
+        .category-chips::-webkit-scrollbar { /* Hide scrollbar for Chrome, Safari, Opera */
+            display: none;
+        }
+
+        .category-chip {
+            background-color: var(--hover-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            border: none;
+        }
+
+        .category-chip:hover {
+            background-color: var(--button-hover-bg-color);
+        }
+
+        .category-chip.active {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* Videos Grid */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto; /* Center the grid */
+        }
+
+        /* Video Card */
+        .video-card {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative; /* For potential hover effects */
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (height / width * 100%) */
+            background-color: #181818;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .video-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: var(--text-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .video-info {
+            padding: 12px 0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--focus-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 14px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-metadata {
+            color: var(--secondary-text-color);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .channel-name {
+            color: var(--secondary-text-color);
+            font-size: 14px;
+            margin-bottom: 2px;
+            display: block; /* Ensure it takes its own line */
+        }
+
+        .channel-name:hover {
+            color: var(--text-color);
+        }
+
+        /* Loading */
+        .loading, .error {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .loading {
+            color: var(--secondary-text-color);
+        }
+
+        .loading i {
+            font-size: 32px;
+            animation: spin 1.5s linear infinite; /* Added subtle spin animation */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: var(--accent-color);
+        }
+
+        .error i {
+            font-size: 32px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+            }
+
+            .content {
+                margin-left: 0; /* Adjust for collapsed sidebar */
+                padding: 16px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-center {
+                max-width: 300px;
+                margin: 0 20px;
+            }
+
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 12px;
+            }
+
+            .video-thumbnail {
+                padding-top: 56.25%; /* Maintain aspect ratio */
+                height: auto; /* Allow height to adjust */
+            }
+
+            .header-btn span {
+                display: none;
+            }
+
+            .sidebar {
+                width: 200px; /* Slightly narrower sidebar on smaller tablets */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0 8px;
+            }
+
+            .header-center {
+                margin: 0 8px;
+                flex: none; /* Allow it to shrink */
+                max-width: unset; /* Remove max-width constraint */
+            }
+
+            .search-input {
+                border-radius: 20px; /* Full rounded corners when search button is hidden */
+            }
+
+            .search-btn, .voice-btn, .search-clear-btn {
+                display: none; /* Hide search button and voice button on smallest screens */
+            }
+
+            .search-container {
+                flex: 1;
+                max-width: unset;
+            }
+
+            .content {
+                padding: 12px;
+            }
+
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-left .logo span {
+                display: none; /* Hide 'ZenTube' text on very small screens */
+            }
+
+            .header-left .logo {
+                font-size: 24px; /* Make icon larger if text is hidden */
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/" class="logo"> <i class="fas fa-circle-play"></i>
+                <span>ZenTube</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar" id="searchInput">
+                <button class="search-clear-btn" id="searchClearBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <button class="voice-btn" title="Búsqueda por voz">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+        <div class="header-right">
+            <a href="pages/Library.html" class="header-btn" title="Subir video">
+                <i class="fas fa-plus"></i>
+                <span>Subir</span>
+            </a>
+            <button class="header-btn" title="Notificaciones">
+                <i class="fas fa-bell"></i>
+            </button>
+            <a href="pages/Profile.html" class="user-avatar" title="Tu perfil">
+                <i class="fas fa-user"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <a href="#" class="sidebar-item active" data-category="trending">
+                    <i class="fas fa-fire"></i>
+                    <span>Tendencias</span>
+                </a>
+                <a href="#" class="sidebar-item" data-category="music">
+                    <i class="fas fa-music"></i>
+                    <span>Música</span>
+                </a>
+                <a href="#" class="sidebar-item" data-category="gaming">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Videojuegos</span>
+                </a>
+                <a href="#" class="sidebar-item" data-category="sports">
+                    <i class="fas fa-futbol"></i>
+                    <span>Deportes</span>
+                </a>
+                <a href="#" class="sidebar-item" data-category="technology">
+                    <i class="fas fa-microchip"></i>
+                    <span>Tecnología</span>
+                </a>
+            </div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Tú</h3>
+                <a href="pages/Profile.html" class="sidebar-item">
+                    <i class="fas fa-user"></i>
+                    <span>Tu canal</span>
+                </a>
+                <a href="pages/Library.html" class="sidebar-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Biblioteca</span>
+                </a>
+                <a href="pages/Shorts.html" class="sidebar-item">
+                    <i class="fas fa-play"></i>
+                    <span>Shorts</span>
+                </a>
+                <a href="pages/History.html" class="sidebar-item"> <i class="fas fa-history"></i>
+                    <span>Historial</span>
+                </a>
+            </div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Configuración</h3>
+                <a href="#" class="sidebar-item" id="settingsItem">
+                    <i class="fas fa-cog"></i>
+                    <span>Ajustes</span>
+                </a>
+                <a href="#" class="sidebar-item" id="helpItem">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ayuda</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="api-key-container" id="apiKeyContainer">
+                <h3 style="color: var(--accent-color); margin-bottom: 8px;">🔑 API Key de YouTube requerida</h3>
+                <p style="color: var(--secondary-text-color); margin-bottom: 12px; font-size: 14px;">
+                    Ingresa tu API Key de YouTube para cargar videos reales.
+                    <a href="https://developers.google.com/youtube/v3/getting-started" target="_blank" style="color: var(--focus-border-color);">
+                        ¿Cómo obtener una API Key?
+                    </a>
+                </p>
+                <input type="text" class="api-key-input" id="apiKeyInput" placeholder="Ingresa tu API Key de YouTube aquí...">
+                <button class="api-key-btn" id="saveApiKey">Guardar API Key</button>
+            </div>
+
+            <div class="category-chips" id="categoryChips">
+                <button class="category-chip active" data-category="trending">Tendencias</button>
+                <button class="category-chip" data-category="music">Música</button>
+                <button class="category-chip" data-category="gaming">Videojuegos</button>
+                <button class="category-chip" data-category="sports">Deportes</button>
+                <button class="category-chip" data-category="technology">Tecnología</button>
+                <button class="category-chip" data-category="comedy">Comedia</button>
+                <button class="category-chip" data-category="education">Educación</button>
+                <button class="category-chip" data-category="news">Noticias</button>
+                <button class="category-chip" data-category="science">Ciencia</button>
+                <button class="category-chip" data-category="travel">Viajes</button>
+                <button class="category-chip" data-category="movies">Películas</button>
+            </div>
+
+            <div class="videos-grid" id="videosGrid">
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Configurar API Key para cargar videos...</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * Utility class for common DOM operations.
+         */
+        class DOMUtils {
+            /**
+             * Selects a single DOM element.
+             * @param {string} selector - The CSS selector.
+             * @returns {HTMLElement | null} The found element or null.
+             */
+            static select(selector) {
+                return document.querySelector(selector);
+            }
+
+            /**
+             * Selects multiple DOM elements.
+             * @param {string} selector - The CSS selector.
+             * @returns {NodeListOf<HTMLElement>} A NodeList of found elements.
+             */
+            static selectAll(selector) {
+                return document.querySelectorAll(selector);
+            }
+
+            /**
+             * Creates a new DOM element.
+             * @param {string} tagName - The tag name of the element.
+             * @param {object} [attributes={}] - An object of attributes to set.
+             * @param {string} [innerHTML=''] - HTML string to set as innerHTML.
+             * @returns {HTMLElement} The created element.
+             */
+            static createElement(tagName, attributes = {}, innerHTML = '') {
+                const element = document.createElement(tagName);
+                for (const key in attributes) {
+                    element.setAttribute(key, attributes[key]);
+                }
+                if (innerHTML) {
+                    element.innerHTML = innerHTML;
+                }
+                return element;
+            }
+
+            /**
+             * Appends a child element to a parent.
+             * @param {HTMLElement} parent - The parent element.
+             * @param {HTMLElement} child - The child element to append.
+             */
+            static appendChild(parent, child) {
+                parent.appendChild(child);
+            }
+
+            /**
+             * Removes a child element from its parent.
+             * @param {HTMLElement} element - The element to remove.
+             */
+            static removeElement(element) {
+                element.parentNode?.removeChild(element);
+            }
+
+            /**
+             * Adds or removes a CSS class from an element.
+             * @param {HTMLElement} element - The target element.
+             * @param {string} className - The class name.
+             * @param {boolean} [add=true] - True to add, false to remove.
+             */
+            static toggleClass(element, className, add = true) {
+                if (add) {
+                    element.classList.add(className);
+                } else {
+                    element.classList.remove(className);
+                }
+            }
+        }
+
+        /**
+         * Utility class for date and time formatting.
+         */
+        class DateTimeUtils {
+            /**
+             * Formats YouTube API duration string (PTnHnMnS) into HH:MM:SS or MM:SS.
+             * @param {string} duration - The ISO 8601 duration string.
+             * @returns {string} Formatted duration.
+             */
+            static formatDuration(duration) {
+                if (!duration) return '';
+
+                const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+                if (!match) return '';
+
+                const hours = parseInt(match[1]) || 0;
+                const minutes = parseInt(match[2]) || 0;
+                const seconds = parseInt(match[3]) || 0;
+
+                const parts = [];
+                if (hours > 0) {
+                    parts.push(hours.toString());
+                    parts.push(minutes.toString().padStart(2, '0'));
+                } else {
+                    parts.push(minutes.toString());
+                }
+                parts.push(seconds.toString().padStart(2, '0'));
+
+                return parts.join(':');
+            }
+
+            /**
+             * Formats a date string into a human-readable "time ago" format.
+             * @param {string} publishedAt - The ISO 8601 date string.
+             * @returns {string} "X time ago" string.
+             */
+            static formatPublishedAt(publishedAt) {
+                const now = new Date();
+                const published = new Date(publishedAt);
+                const diffTime = Math.abs(now.getTime() - published.getTime()); // Use getTime() for milliseconds
+                const diffSeconds = Math.floor(diffTime / 1000);
+                const diffMinutes = Math.floor(diffSeconds / 60);
+                const diffHours = Math.floor(diffMinutes / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                const diffWeeks = Math.floor(diffDays / 7);
+                const diffMonths = Math.floor(diffDays / 30); // Approximate
+                const diffYears = Math.floor(diffDays / 365); // Approximate
+
+                if (diffMinutes < 1) {
+                    return `hace ${diffSeconds} segundo${diffSeconds !== 1 ? 's' : ''}`;
+                } else if (diffHours < 1) {
+                    return `hace ${diffMinutes} minuto${diffMinutes !== 1 ? 's' : ''}`;
+                } else if (diffDays < 1) {
+                    return `hace ${diffHours} hora${diffHours !== 1 ? 's' : ''}`;
+                } else if (diffDays === 1) {
+                    return 'hace 1 día';
+                } else if (diffWeeks < 1) {
+                    return `hace ${diffDays} días`;
+                } else if (diffMonths < 1) {
+                    return `hace ${diffWeeks} semana${diffWeeks !== 1 ? 's' : ''}`;
+                } else if (diffYears < 1) {
+                    return `hace ${diffMonths} mes${diffMonths !== 1 ? 'es' : ''}`;
+                } else {
+                    return `hace ${diffYears} año${diffYears !== 1 ? 's' : ''}`;
+                }
+            }
+        }
+
+        /**
+         * Utility class for number formatting.
+         */
+        class NumberUtils {
+            /**
+             * Formats a raw view count into a human-readable format (e.g., 1.2M, 50K).
+             * @param {string} viewCount - The raw view count string.
+             * @returns {string} Formatted view count.
+             */
+            static formatViewCount(viewCount) {
+                if (!viewCount) return '0 visualizaciones';
+
+                const count = parseInt(viewCount);
+                if (count >= 1000000) {
+                    return `${(count / 1000000).toFixed(1).replace(/\.0$/, '')}M visualizaciones`;
+                } else if (count >= 1000) {
+                    return `${(count / 1000).toFixed(1).replace(/\.0$/, '')}K visualizaciones`;
+                }
+                return `${count} visualizaciones`;
+            }
+        }
+
+
+        /**
+         * Main ZenTube application class.
+         */
+        class ZenTubeApp {
+            constructor() {
+                // Initialize properties
+                this.apiKey = ''; // Stores the YouTube API key
+                this.currentCategory = 'trending'; // Default category
+                this.videos = []; // Stores fetched video data
+                this.elements = {}; // Cache for DOM elements
+
+                this.init(); // Initialize the application
+            }
+
+            /**
+             * Initializes the application by caching elements and binding events.
+             */
+            init() {
+                this.cacheElements(); // Get references to all necessary DOM elements
+                this.bindEvents(); // Attach event listeners
+                this.checkApiKey(); // Check for pre-configured API key
+            }
+
+            /**
+             * Caches frequently used DOM elements for better performance.
+             */
+            cacheElements() {
+                this.elements = {
+                    menuBtn: DOMUtils.select('#menuBtn'),
+                    sidebar: DOMUtils.select('#sidebar'),
+                    searchInput: DOMUtils.select('#searchInput'),
+                    searchBtn: DOMUtils.select('#searchBtn'),
+                    searchClearBtn: DOMUtils.select('#searchClearBtn'), // New clear button
+                    saveApiKeyBtn: DOMUtils.select('#saveApiKey'),
+                    apiKeyInput: DOMUtils.select('#apiKeyInput'),
+                    apiKeyContainer: DOMUtils.select('#apiKeyContainer'),
+                    categoryChips: DOMUtils.selectAll('.category-chip'),
+                    sidebarItems: DOMUtils.selectAll('.sidebar-item'),
+                    videosGrid: DOMUtils.select('#videosGrid'),
+                    headerUploadBtn: DOMUtils.select('.header-btn[href="pages/Library.html"]'), // Select by href
+                    userAvatarBtn: DOMUtils.select('.user-avatar[href="pages/Profile.html"]') // Select by href
+                };
+            }
+
+            /**
+             * Binds all necessary event listeners to DOM elements.
+             */
+            bindEvents() {
+                // Toggle sidebar visibility
+                this.elements.menuBtn.addEventListener('click', () => {
+                    DOMUtils.toggleClass(this.elements.sidebar, 'show', !this.elements.sidebar.classList.contains('show'));
+                });
+
+                // Handle search button click
+                this.elements.searchBtn.addEventListener('click', () => {
+                    this.handleSearch();
+                });
+
+                // Handle Enter key press in search input
+                this.elements.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.handleSearch();
+                    }
+                });
+
+                // Show/hide clear button based on search input content
+                this.elements.searchInput.addEventListener('input', () => {
+                    if (this.elements.searchInput.value.length > 0) {
+                        this.elements.searchClearBtn.style.display = 'block';
+                    } else {
+                        this.elements.searchClearBtn.style.display = 'none';
+                    }
+                });
+
+                // Clear search input
+                this.elements.searchClearBtn.addEventListener('click', () => {
+                    this.elements.searchInput.value = '';
+                    this.elements.searchClearBtn.style.display = 'none';
+                    this.loadVideos(); // Reload videos when search is cleared
+                });
+
+                // Save API Key
+                this.elements.saveApiKeyBtn.addEventListener('click', () => {
+                    this.saveApiKey();
+                });
+
+                // Handle category chip clicks
+                this.elements.categoryChips.forEach(chip => {
+                    chip.addEventListener('click', (e) => {
+                        this.selectCategory(e.target.dataset.category);
+                    });
+                });
+
+                // Handle sidebar item clicks (only for category-based items)
+                this.elements.sidebarItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        // Prevent default for category items to handle via JS
+                        if (item.dataset.category) {
+                            e.preventDefault();
+                            this.selectCategory(item.dataset.category);
+                        }
+                        // For other items (Profile, Library, Shorts, History, Settings, Help), allow default navigation
+                        // by ensuring their href is handled directly by the browser.
+                        // The initial HTML already links these correctly.
+                    });
+                });
+            }
+
+            /**
+             * Checks for a pre-configured API key and loads videos if found.
+             */
+            checkApiKey() {
+                // This API key is for demonstration purposes and might be rate-limited or invalid.
+                // Users should obtain their own keys.
+                this.apiKey = 'AIzaSyAPNOGcA3U82qNO_w0qjyoj9hRuQzC-oaI'; // Pre-configured key
+                if (this.apiKey) {
+                    DOMUtils.removeElement(this.elements.apiKeyContainer); // Hide API key input
+                    this.loadVideos(); // Load videos immediately
+                }
+            }
+
+            /**
+             * Saves the API key entered by the user.
+             */
+            saveApiKey() {
+                const apiKey = this.elements.apiKeyInput.value.trim();
+                if (!apiKey) {
+                    alert('Por favor ingresa una API Key válida');
+                    return;
+                }
+
+                this.apiKey = apiKey;
+                DOMUtils.removeElement(this.elements.apiKeyContainer); // Hide API key input
+                this.loadVideos(); // Load videos with the new key
+            }
+
+            /**
+             * Selects a video category and updates the UI.
+             * @param {string} category - The selected category.
+             */
+            selectCategory(category) {
+                this.currentCategory = category;
+
+                // Update active state for category chips
+                this.elements.categoryChips.forEach(chip => {
+                    DOMUtils.toggleClass(chip, 'active', chip.dataset.category === category);
+                });
+
+                // Update active state for sidebar items
+                this.elements.sidebarItems.forEach(item => {
+                    DOMUtils.toggleClass(item, 'active', item.dataset.category === category);
+                });
+
+                this.loadVideos(); // Load videos for the selected category
+            }
+
+            /**
+             * Handles video search based on the input query.
+             */
+            handleSearch() {
+                const query = this.elements.searchInput.value.trim();
+                if (!query) {
+                    this.loadVideos(); // If search input is empty, load trending/current category videos
+                    return;
+                }
+
+                if (!this.apiKey) {
+                    alert('Por favor configura tu API Key primero para realizar búsquedas');
+                    return;
+                }
+
+                this.searchVideos(query);
+            }
+
+            /**
+             * Fetches videos from the YouTube API based on the current category.
+             */
+            async loadVideos() {
+                if (!this.apiKey) return;
+
+                this.showLoading('Cargando videos de ' + (this.currentCategory === 'trending' ? 'Tendencias' : this.currentCategory) + '...');
+
+                try {
+                    let url;
+                    // Mapping categories to YouTube API videoCategoryIds
+                    // Refer to YouTube Data API v3 for a complete list:
+                    // https://developers.google.com/youtube/v3/docs/videoCategories/list
+                    const categoryMap = {
+                        trending: { chart: 'mostPopular', videoCategoryId: '0' }, // 0 is for all categories (trending)
+                        music: { chart: 'mostPopular', videoCategoryId: '10' },
+                        gaming: { chart: 'mostPopular', videoCategoryId: '20' },
+                        sports: { chart: 'mostPopular', videoCategoryId: '17' },
+                        technology: { chart: 'mostPopular', videoCategoryId: '28' },
+                        comedy: { chart: 'mostPopular', videoCategoryId: '23' },
+                        education: { chart: 'mostPopular', videoCategoryId: '27' },
+                        news: { chart: 'mostPopular', videoCategoryId: '25' },
+                        science: { chart: 'mostPopular', videoCategoryId: '28' }, // Technology and Science often share
+                        travel: { chart: 'mostPopular', videoCategoryId: '19' },
+                        movies: { chart: 'mostPopular', videoCategoryId: '30' }
+                    };
+
+                    const category = categoryMap[this.currentCategory] || categoryMap.trending;
+
+                    url = `https://www.googleapis.com/youtube/v3/videos?` +
+                          `part=snippet,statistics,contentDetails&` + // Request necessary parts
+                          `chart=${category.chart}&` +
+                          `videoCategoryId=${category.videoCategoryId}&` +
+                          `maxResults=24&` + // Fetch up to 24 results
+                          `regionCode=US&` + // Target United States for popular videos
+                          `key=${this.apiKey}`;
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error.message);
+                    }
+
+                    this.videos = data.items || [];
+                    this.renderVideos();
+
+                } catch (error) {
+                    console.error('Error loading videos:', error);
+                    this.showError('Error al cargar videos: ' + error.message + '. Por favor, verifica tu API Key o conexión.');
+                }
+            }
+
+            /**
+             * Searches for videos on YouTube based on a query.
+             * @param {string} query - The search query.
+             */
+            async searchVideos(query) {
+                this.showLoading('Buscando videos para "' + query + '"...');
+
+                try {
+                    // Step 1: Search for videos by query
+                    const searchUrl = `https://www.googleapis.com/youtube/v3/search?` +
+                              `part=snippet&` +
+                              `q=${encodeURIComponent(query)}&` +
+                              `type=video&` +
+                              `maxResults=24&` +
+                              `key=${this.apiKey}`;
+
+                    const searchResponse = await fetch(searchUrl);
+                    const searchData = await searchResponse.json();
+
+                    if (searchData.error) {
+                        throw new Error(searchData.error.message);
+                    }
+
+                    if (!searchData.items || searchData.items.length === 0) {
+                        this.videos = [];
+                        this.renderVideos(); // Show "No videos found" message
+                        return;
+                    }
+
+                    // Step 2: Get detailed information (duration, view count) for the found videos
+                    const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+                    const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?` +
+                                     `part=snippet,statistics,contentDetails&` +
+                                     `id=${videoIds}&` +
+                                     `key=${this.apiKey}`;
+
+                    const detailsResponse = await fetch(detailsUrl);
+                    const detailsData = await detailsResponse.json();
+
+                    if (detailsData.error) {
+                        throw new Error(detailsData.error.message);
+                    }
+
+                    this.videos = detailsData.items || [];
+                    this.renderVideos();
+
+                } catch (error) {
+                    console.error('Error searching videos:', error);
+                    this.showError('Error en la búsqueda: ' + error.message + '. Intenta con otra palabra clave.');
+                }
+            }
+
+            /**
+             * Renders the fetched video data into the video grid.
+             */
+            renderVideos() {
+                this.elements.videosGrid.innerHTML = ''; // Clear previous videos
+
+                if (this.videos.length === 0) {
+                    this.elements.videosGrid.innerHTML = `
+                        <div class="error">
+                            <i class="fas fa-search"></i>
+                            <span>No se encontraron videos para esta categoría o búsqueda.</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.videos.forEach(video => {
+                    const videoCard = this.createVideoCard(video);
+                    DOMUtils.appendChild(this.elements.videosGrid, videoCard);
+                });
+            }
+
+            /**
+             * Creates a single video card DOM element.
+             * @param {object} video - The video data object from YouTube API.
+             * @returns {HTMLElement} The created video card element.
+             */
+            createVideoCard(video) {
+                const card = DOMUtils.createElement('div', { class: 'video-card' });
+
+                const videoId = video.id.videoId || video.id; // Handle both search and video API responses
+                const thumbnailUrl = video.snippet.thumbnails.medium.url;
+                const title = video.snippet.title;
+                const channelName = video.snippet.channelTitle;
+                const duration = DateTimeUtils.formatDuration(video.contentDetails?.duration);
+                const viewCount = NumberUtils.formatViewCount(video.statistics?.viewCount);
+                const publishedAt = DateTimeUtils.formatPublishedAt(video.snippet.publishedAt);
+                const channelAvatarInitial = channelName ? channelName[0].toUpperCase() : '?';
+
+                card.innerHTML = `
+                    <div class="video-thumbnail">
+                        <img src="${thumbnailUrl}" alt="${title}">
+                        ${duration ? `<div class="video-duration">${duration}</div>` : ''}
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar" title="${channelName}">
+                            ${video.snippet.channelThumbnail ? `<img src="${video.snippet.channelThumbnail}" alt="${channelName} Avatar">` : `<span>${channelAvatarInitial}</span>`}
+                        </div>
+                        <div class="video-details">
+                            <div class="video-title" title="${title}">${title}</div>
+                            <div class="channel-name" title="${channelName}">${channelName}</div>
+                            <div class="video-metadata">${viewCount} • ${publishedAt}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Open YouTube video in a new tab when card is clicked
+                card.addEventListener('click', () => {
+                    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+                });
+
+                return card;
+            }
+
+            /**
+             * Displays a loading message in the video grid.
+             * @param {string} message - The loading message to display.
+             */
+            showLoading(message) {
+                this.elements.videosGrid.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+            }
+
+            /**
+             * Displays an error message in the video grid.
+             * @param {string} message - The error message to display.
+             */
+            showError(message) {
+                this.elements.videosGrid.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the ZenTube application when the DOM is fully loaded.
+        document.addEventListener('DOMContentLoaded', () => {
+            new ZenTubeApp();
+        });
+    </script>
+</body>
+
+</html>

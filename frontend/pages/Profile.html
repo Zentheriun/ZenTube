@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Canal - ZenTube</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background-color: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
+            border-bottom: 1px solid #272727;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .back-btn:hover {
+            background-color: #272727;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .logo i {
+            color: #ff0000;
+            font-size: 24px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 18px;
+            transition: background-color 0.2s;
+        }
+
+        .header-btn:hover {
+            background-color: #272727;
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 56px;
+            background-color: #0f0f0f;
+        }
+
+        /* Channel Banner */
+        .channel-banner {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .channel-banner:hover .banner-overlay {
+            opacity: 1;
+        }
+
+        .banner-edit {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Channel Info */
+        .channel-info {
+            padding: 24px;
+            border-bottom: 1px solid #272727;
+        }
+
+        .channel-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .channel-avatar {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #1c62b9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .channel-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .channel-avatar:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .channel-details {
+            flex: 1;
+        }
+
+        .channel-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .channel-name:hover {
+            background-color: #272727;
+        }
+
+        .channel-stats {
+            color: #aaaaaa;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .channel-description {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .channel-description:hover {
+            background-color: #272727;
+        }
+
+        .channel-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            background-color: #272727;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #404040;
+        }
+
+        .action-btn.primary {
+            background-color: #1c62b9;
+        }
+
+        .action-btn.primary:hover {
+            background-color: #2563eb;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid #272727;
+            background-color: #0f0f0f;
+            padding: 0 24px;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+        }
+
+        .nav-tab:hover {
+            color: #ffffff;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 24px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Videos Grid */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card {
+            background-color: #0f0f0f;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .video-info {
+            padding: 12px;
+        }
+
+        .video-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .video-metadata {
+            color: #aaaaaa;
+            font-size: 12px;
+        }
+
+        /* Edit Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #181818;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1c62b9;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-cancel {
+            background-color: #404040;
+            color: #ffffff;
+        }
+
+        .btn-cancel:hover {
+            background-color: #606060;
+        }
+
+        .btn-save {
+            background-color: #1c62b9;
+            color: #ffffff;
+        }
+
+        .btn-save:hover {
+            background-color: #2563eb;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .channel-banner {
+                height: 150px;
+            }
+
+            .channel-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .channel-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 16px;
+            }
+
+            .nav-tabs {
+                padding: 0 16px;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <i class="fas fa-circle-play"></i>
+                <span>ZenTube</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button class="header-btn">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="header-btn">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Channel Banner -->
+        <div class="channel-banner" id="channelBanner">
+            <div class="banner-overlay">
+                <button class="banner-edit" onclick="editBanner()">
+                    <i class="fas fa-camera"></i> Cambiar banner
+                </button>
+            </div>
+        </div>
+
+        <!-- Channel Info -->
+        <div class="channel-info">
+            <div class="channel-header">
+                <div class="channel-avatar" onclick="editAvatar()">
+                    <i class="fas fa-user" id="avatarIcon"></i>
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+
+                <div class="channel-details">
+                    <h1 class="channel-name" id="channelName" onclick="editChannelName()">Mi Canal</h1>
+                    <div class="channel-stats">
+                        <span id="subscriberCount">1.2K</span> suscriptores •
+                        <span id="videoCount">25</span> videos
+                    </div>
+                    <p class="channel-description" id="channelDescription" onclick="editDescription()">
+                        Bienvenidos a mi canal. Aquí encontrarás contenido increíble sobre diversos temas. ¡No olvides
+                        suscribirte!
+                    </p>
+                    <div class="channel-actions">
+                        <button class="action-btn primary" onclick="editChannel()">
+                            <i class="fas fa-edit"></i> Personalizar canal
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-cog"></i> Administrar videos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('videos')">VIDEOS</button>
+            <button class="nav-tab" onclick="showTab('shorts')">SHORTS</button>
+            <button class="nav-tab" onclick="showTab('playlists')">LISTAS DE REPRODUCCIÓN</button>
+            <button class="nav-tab" onclick="showTab('community')">COMUNIDAD</button>
+            <button class="nav-tab" onclick="showTab('about')">ACERCA DE</button>
+        </nav>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Videos Tab -->
+            <div class="tab-content active" id="videos">
+                <div class="videos-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <i class="fas fa-play"></i>
+                            <div class="video-duration">10:25</div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Mi primer video</h3>
+                            <div class="video-metadata">1.5K visualizaciones • hace 2 días</div>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <i class="fas fa-play"></i>
+                            <div class="video-duration">15:30</div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Tutorial increíble</h3>
+                            <div class="video-metadata">2.3K visualizaciones • hace 1 semana</div>
+                        </div>
+                    </div>
+
+                    <div class="video-card">
+                        <div class="video-thumbnail">
+                            <i class="fas fa-play"></i>
+                            <div class="video-duration">8:45</div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Vlog del día</h3>
+                            <div class="video-metadata">890 visualizaciones • hace 3 días</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Tabs -->
+            <div class="tab-content" id="shorts">
+                <p style="color: #aaaaaa; text-align: center; padding: 40px;">No hay Shorts disponibles</p>
+            </div>
+
+            <div class="tab-content" id="playlists">
+                <p style="color: #aaaaaa; text-align: center; padding: 40px;">No hay listas de reproducción</p>
+            </div>
+
+            <div class="tab-content" id="community">
+                <p style="color: #aaaaaa; text-align: center; padding: 40px;">No hay publicaciones de la comunidad</p>
+            </div>
+
+            <div class="tab-content" id="about">
+                <div style="color: #ffffff;">
+                    <h3 style="margin-bottom: 16px;">Acerca de este canal</h3>
+                    <p style="color: #aaaaaa; line-height: 1.6;">
+                        Este es mi canal personal donde comparto contenido sobre diversos temas que me apasionan.
+                        Gracias por visitarme y espero que disfrutes del contenido.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar canal</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="editForm">
+                <div class="form-group">
+                    <label class="form-label">Nombre del canal</label>
+                    <input type="text" class="form-input" id="editChannelName" placeholder="Nombre del canal">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-input form-textarea" id="editChannelDesc"
+                        placeholder="Describe tu canal..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Color del avatar</label>
+                    <input type="color" class="form-input" id="avatarColor" value="#1c62b9">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-save">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Modal functionality
+        function editChannel() {
+            const modal = document.getElementById('editModal');
+            const channelName = document.getElementById('channelName').textContent;
+            const channelDesc = document.getElementById('channelDescription').textContent;
+
+            document.getElementById('editChannelName').value = channelName;
+            document.getElementById('editChannelDesc').value = channelDesc;
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Edit form submission
+        document.getElementById('editForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const newName = document.getElementById('editChannelName').value;
+            const newDesc = document.getElementById('editChannelDesc').value;
+            const newColor = document.getElementById('avatarColor').value;
+
+            // Update channel info
+            document.getElementById('channelName').textContent = newName;
+            document.getElementById('channelDescription').textContent = newDesc;
+            document.querySelector('.channel-avatar').style.backgroundColor = newColor;
+
+            closeModal();
+        });
+
+        // Quick edit functions
+        function editChannelName() {
+            const newName = prompt('Nuevo nombre del canal:', document.getElementById('channelName').textContent);
+            if (newName) {
+                document.getElementById('channelName').textContent = newName;
+            }
+        }
+
+        function editDescription() {
+            const newDesc = prompt('Nueva descripción:', document.getElementById('channelDescription').textContent);
+            if (newDesc) {
+                document.getElementById('channelDescription').textContent = newDesc;
+            }
+        }
+
+        function editAvatar() {
+            const colors = ['#1c62b9', '#dc2626', '#16a34a', '#ca8a04', '#9333ea', '#c2410c'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.querySelector('.channel-avatar').style.backgroundColor = randomColor;
+        }
+
+        function editBanner() {
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+            ];
+
+            const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+            document.getElementById('channelBanner').style.background = randomGradient;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+
+</html>
